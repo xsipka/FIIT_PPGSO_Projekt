@@ -1,0 +1,6 @@
+"C:\Program Files\JetBrains\CLion 2020.2.3\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" "D:\Dokumenty\STU - FIIT\5. sem\PPGSO\template"
+-- Found GLFW3: D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/dependencies/lib/mingw/libglfw3.a
+-- GLM_INCLUDE_DIR = D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/dependencies/include
+-- Configuring done
+-- Generating done
+-- Build files have been written to: D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/cmake-build-debug

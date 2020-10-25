@@ -1,0 +1,3 @@
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/cmake-build-debug/CMakeFiles/template.dir
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/cmake-build-debug/CMakeFiles/rebuild_cache.dir
