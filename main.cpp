@@ -16,7 +16,7 @@ int main() {
     int framebuffer_width = 0;
     int framebuffer_height = 0;
 
-    Camera cam(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+    Camera cam(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
     GameWindow window(WINDOW_WIDTH, WINDOW_HEIGHT, "XD", framebuffer_width, framebuffer_height, cam);
 
     // Maybe some init functions called here ????????

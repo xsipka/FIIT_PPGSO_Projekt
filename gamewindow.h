@@ -120,7 +120,7 @@ private:
 
     void textures_init() {
         m_textures.push_back(new Texture(R"(images\linus_sex_tips.png)", GL_TEXTURE_2D));
-        m_textures.push_back(new Texture(R"(images\xd.png)", GL_TEXTURE_2D));
+        m_textures.push_back(new Texture(R"(images\lol.png)", GL_TEXTURE_2D));
     }
 
     void meshes_init() {
