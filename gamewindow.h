@@ -11,7 +11,7 @@ private:
     int m_framebuffer_height{};
 
     // View matrix
-    glm::vec3 m_up_view;
+    glm::vec3 m_world_up;
     glm::vec3 m_front_view;
     glm::vec3 m_camera_pos;
     glm::mat4 m_view_matrix;
@@ -22,11 +22,13 @@ private:
     float m_far_plane{};
     glm::mat4 m_projection_matrix;
 
-    std::vector<PointLight*> m_lights;
-    std::vector<Shader*> m_shaders;
-    std::vector<Texture*> m_textures;
-    std::vector<Mesh*> m_meshes;
-    std::vector<Material*> m_materials;
+    // Shader
+    Shader* m_shader{};
+
+    // Vector containing all light sources
+    std::vector<Lightning*> m_lights;
+
+    // Vector containing all models
     std::vector<Model*> m_models;
 
     // Delta time & mouse input
@@ -101,7 +103,7 @@ private:
     // Init functions
     void matrix_init() {
         m_view_matrix = glm::mat4(1.f);
-        m_view_matrix = glm::lookAt(m_camera_pos, m_camera_pos + m_front_view, m_up_view);
+        m_view_matrix = glm::lookAt(m_camera_pos, m_camera_pos + m_front_view, m_world_up);
 
         m_projection_matrix = glm::mat4(1.f);
         m_projection_matrix = glm::perspective(
@@ -111,66 +113,65 @@ private:
     }
 
     void lights_init() {
-        m_lights.push_back(new PointLight(glm::vec3 (0.f, 0.f, 1.f), glm::vec3 (0.f, 1.f, 1.f), 10.f));
+        m_lights.push_back(new Lightning(glm::vec3 (0.f, 1.f, 0.f), glm::vec3 (0.8f, 0.f, 0.8f), 10.f));
     }
 
-    void shaders_init() {
-        m_shaders.push_back(new Shader("vertex.glsl", "fragment.glsl", ""));
+    void shader_init() {
+        m_shader = new Shader("vertex.glsl", "fragment.glsl");
     }
 
-    void textures_init() {
-        m_textures.push_back(new Texture(R"(images\linus_sex_tips.png)", GL_TEXTURE_2D));
-        m_textures.push_back(new Texture(R"(images\lol.png)", GL_TEXTURE_2D));
-    }
+    // Split into to functions with parameters
+    void models_init() {
 
-    void meshes_init() {
-        /*m_meshes.push_back(new Mesh (Pyramid().get_vertices(),  Pyramid().get_vertices_num(),
-                                         Pyramid().get_indices(), Pyramid().get_indices_num()));*/
+        // Create textures
+        auto *texture_01 = new Texture(R"(images\floor_01.png)", GL_TEXTURE_2D);
+        auto *texture_02 = new Texture(R"(images\ceiling_01.jpg)", GL_TEXTURE_2D);
 
+        // Create material
+        auto *material = new Material(glm::vec3(1.25f), glm::vec3(0.5f), glm::vec3(0.5f), 0);
+
+        // Create meshes
+        std::vector<Mesh*> m_meshes;
         m_meshes.push_back(new Mesh (Ground().get_vertices(),  Ground().get_vertices_num(),
                                      Ground().get_indices(), Ground().get_indices_num()));
-        m_meshes[0]->scale_mesh(glm::vec3(25.f));
+        m_meshes[0]->scale_mesh(glm::vec3(10.f));
+
+        std::vector<Mesh*> wall_mesh;
+        wall_mesh.push_back(new Mesh (Walls().get_vertices(),  Walls().get_vertices_num(),
+                                     Walls().get_indices(), Walls().get_indices_num()));
+        wall_mesh[0]->scale_mesh(glm::vec3(10.f));
 
         /*std::vector<Vertex> temp;
         temp = load_obj_file("obj_files/kock.obj");
-
         m_meshes.push_back(new Mesh (temp.data(), temp.size(), nullptr, 0));*/
-    }
 
-    void materials_init() {
-        m_materials.push_back(new Material(glm::vec3(.25f), glm::vec3(.5f), glm::vec3(1.f), 0, 1));
-    }
+        // Walls
+        //m_models.push_back(new Model(material, diffuse_tex, m_meshes, glm::vec3(0.f, 0.f, 0.f)));
 
-    void models_init() {
-        m_models.push_back(new Model(m_materials[0], m_textures[0], m_textures[0], m_meshes, glm::vec3(0.f, -0.2f, 0.f)));
-        //m_models.push_back(new Model(m_materials[0], m_textures[0], m_textures[0], m_meshes, glm::vec3(0.f, -0.3f, 2.f)));
-        //m_models.push_back(new Model(m_materials[0], m_textures[0], m_textures[0], m_meshes, glm::vec3(2.f, -0.3f, 0.f)));
-
-        //m_models.push_back(new Model(m_materials[0], m_textures[0], m_textures[0], m_meshes, glm::vec3(0.f, 1.f, 1.f)));
-        //m_models.push_back(new Model(m_materials[0], m_textures[0], m_textures[0], m_meshes, glm::vec3(0.f, 0.3f, 2.f)));
-        //m_models.push_back(new Model(m_materials[0], m_textures[0], m_textures[0], m_meshes, glm::vec3(2.f, 0.3f, 0.f)));
+        // Floor & ceiling
+        m_models.push_back(new Model(material, texture_01, m_meshes, glm::vec3(0.f, -0.75f, 0.f)));
+        m_models.push_back(new Model(material, texture_02, m_meshes, glm::vec3(0.f, 2.25f, 0.f)));
+        m_models.push_back(new Model(material, texture_02, wall_mesh, glm::vec3(0.f, 0.f, 0.f)));
     }
 
     void uniforms_init() {
-        m_shaders[0]->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
-        m_shaders[0]->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
-        m_lights[0]->send_to_shader(*m_shaders[0]);
+        m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
+        m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
+        m_lights[0]->send_to_shader(*m_shader);
     }
 
     // Update functions
     void uniforms_update() {
 
-        //this->shaders[0]->use_program();
         m_view_matrix = m_camera.get_view_matrix();
         /*m_projection_matrix = glm::perspective(
                 glm::radians(m_fov),
                 static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT),
                 m_near_plane, m_far_plane);*/
-        m_shaders[0]->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
-        m_shaders[0]->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
-        m_shaders[0]->set_gl_vec3(m_camera.get_position(), "camera_pos");
-        //*m_lights[0] = m_camera.get_position();
-        m_lights[0]->send_to_shader(*m_shaders[0]);
+        m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
+        m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
+        m_shader->set_gl_vec3(m_camera.get_position(), "camera_pos");
+        m_lights[0]->send_to_shader(*m_shader);
     }
 
     void update_delta_time() {
@@ -194,7 +195,7 @@ private:
         m_mouse_x_last = m_mouse_x;
         m_mouse_y_last = m_mouse_y;
 
-        if (glfwGetKey(m_window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+        if (glfwGetKey(m_window, GLFW_KEY_Q) == GLFW_PRESS) {
             m_lights[0]->set_position(m_camera.get_position());
         }
     }
@@ -213,7 +214,7 @@ public:
         GameWindow::glew_init();
         GameWindow::options_init();
 
-        m_up_view = glm::vec3(0.f, 1.f, 0.f);
+        m_world_up = glm::vec3(0.f, 1.f, 0.f);
         m_front_view = glm::vec3(0.f, 0.f, -1.f);
         m_camera_pos = glm::vec3(0.f, 0.f, 1.f);
 
@@ -234,10 +235,7 @@ public:
         m_mouse_y_offset = 0;
 
         matrix_init();
-        shaders_init();
-        textures_init();
-        materials_init();
-        meshes_init();
+        shader_init();
         models_init();
         lights_init();
         uniforms_init();
@@ -261,15 +259,12 @@ public:
 
         glfwPollEvents();
 
-        //std::cout << "X: " << m_mouse_x_offset << "\tY: " << m_mouse_y_offset << "\n";
-
         move_player();
+        exit_window();
 
         /*for (auto& i : m_models) {
             i->rotate_model(glm::vec3(0, 0.1, 0));
         }*/
-
-        exit_window();
     }
 
     // Main render function
@@ -280,19 +275,10 @@ public:
 
         // Updates uniforms
         uniforms_update();
-        /*m_materials[0]->send_to_shader(*m_shaders[0]);
-        m_shaders[0]->use_program();
-
-        // Activate texture
-        m_textures[0]->bind_texture(GL_TEXTURE_2D, 0);
-        m_textures[0]->bind_texture(GL_TEXTURE_2D, 1);
-
-        // Draw
-        m_meshes[0]->render(m_shaders[0]);*/
 
         // Render models
         for (auto& i : m_models) {
-            i->render_model(m_shaders[0]);
+            i->render_model(m_shader);
         }
 
         // End draw
@@ -315,33 +301,34 @@ public:
     void move_player() {
         // Move forward
         if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS) {
-            if (!collision_detection())
-            m_camera.update_user_input(m_delta_time, 'F', m_mouse_x_offset, m_mouse_y_offset);
+            if (!collision_detection('F')) {
+                m_camera.update_user_input(m_delta_time, 'F', m_mouse_x_offset, m_mouse_y_offset);
+            }
         }
         // Move backward
         if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS) {
-            if (!collision_detection())
-            m_camera.update_user_input(m_delta_time, 'B', m_mouse_x_offset, m_mouse_y_offset);
+            if (!collision_detection('B')) {
+                m_camera.update_user_input(m_delta_time, 'B', m_mouse_x_offset, m_mouse_y_offset);
+            }
         }
         // Move left
         if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS) {
-            if (!collision_detection())
-            m_camera.update_user_input(m_delta_time, 'L', m_mouse_x_offset, m_mouse_y_offset);
+            if (!collision_detection('L')) {
+                m_camera.update_user_input(m_delta_time, 'L', m_mouse_x_offset, m_mouse_y_offset);
+            }
         }
         // Move right
         if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS) {
-            if (!collision_detection())
-            m_camera.update_user_input(m_delta_time, 'R', m_mouse_x_offset, m_mouse_y_offset);
+            if (!collision_detection('R')) {
+                m_camera.update_user_input(m_delta_time, 'R', m_mouse_x_offset, m_mouse_y_offset);
+            }
         }
     }
 
-    bool collision_detection() {
+    // Checks Player - walls collisions
+    bool collision_detection(char direction) {
 
-        for (auto& i : m_models) {
-            i->get_position();
-            /*std::cout << "Model: x: " << i->get_position().x << ", z: " << i->get_position().z;
-            std::cout << " Camera: x: " << m_camera.get_position().x << ", z: " << m_camera.get_position().z << "\n";*/
-        }
+        std::cout << " Camera: x: " << m_camera.get_position().x << ", z: " << m_camera.get_position().z << "\n";
         return false;
     }
 };

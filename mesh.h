@@ -143,7 +143,7 @@ public:
 
 
     // Updates uniforms, bind VAO and renders object
-    void render(Shader *shader) {
+    void render_mesh(Shader *shader) {
 
         model_matrix_update();
         send_to_shader(shader);

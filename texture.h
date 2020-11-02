@@ -7,6 +7,8 @@
 #include <fstream>
 #include <string>
 
+// Used for loading textures
+// Source: https://github.com/nothings/stb/blob/master/stb_image.h
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 
@@ -56,7 +58,6 @@ public:
     GLuint get_texture_id() const {
         return m_id;
     }
-
 
     // Binds texture and make it active
     void bind_texture(GLenum texture_type, unsigned texture_unit) const {

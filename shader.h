@@ -54,22 +54,16 @@ private:
         return shader;
     }
 
-    // links shaders to program (vertex, fragment, geometry)
-    void link_shaders(GLuint vertex_shader, GLuint frag_shader, GLuint geo_shader) {
+    // links shaders to program (vertex, fragment)
+    void link_shaders(GLuint vertex_shader, GLuint frag_shader) {
 
         char info_log[512];
         GLint checker = 0;
         m_id = glCreateProgram();
         glUseProgram(m_id);
 
-        // mandatory shaders
         glAttachShader(m_id, vertex_shader);
         glAttachShader(m_id, frag_shader);
-
-        // geometry shader is attached only if it exists
-        if (geo_shader) {
-            glAttachShader(m_id, geo_shader);
-        }
 
         glLinkProgram(m_id);
         glGetProgramiv(m_id, GL_LINK_STATUS, &checker);
@@ -83,24 +77,19 @@ private:
         glUseProgram(0);
         glDeleteShader(vertex_shader);
         glDeleteShader(frag_shader);
-        glDeleteShader(geo_shader);
     }
 
 
 public:
     // Constructor
-    Shader(const std::string& vertex_file, const std::string& frag_file, const std::string& geo_file) {
-        GLuint vertex_shader = 0;
-        GLuint frag_shader = 0;
-        GLuint geo_shader = 0;
+    Shader(const std::string& vertex_file, const std::string& frag_file) {
+        GLuint vertex_shader;
+        GLuint frag_shader;
 
         vertex_shader = load_shader(GL_VERTEX_SHADER, vertex_file);
         frag_shader = load_shader(GL_FRAGMENT_SHADER, frag_file);
 
-        if (!geo_file.empty()) {
-            geo_shader = load_shader(GL_GEOMETRY_SHADER, geo_file);
-        }
-        this->link_shaders(vertex_shader, frag_shader, geo_shader);
+        this->link_shaders(vertex_shader, frag_shader);
     }
 
     //Destructor
@@ -121,49 +110,35 @@ public:
     // Sets uniforms (matrices, vectors, other variables)
     void set_gl_mat4(glm::mat4 values, const GLchar *name, GLboolean transpose) const {
 
-        this->use_program();
+        use_program();
         glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, transpose, glm::value_ptr(values));
-        Shader::set_to_null();
-    }
-
-    void set_gl_mat3(glm::mat3 values, const GLchar *name, GLboolean transpose) const {
-
-        this->use_program();
-        glUniformMatrix3fv(glGetUniformLocation(m_id, name), 1, transpose, glm::value_ptr(values));
         Shader::set_to_null();
     }
 
     void set_gl_vec4(glm::fvec4 values, const GLchar *name) const {
 
-        this->use_program();
+        use_program();
         glUniform4fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(values));
         Shader::set_to_null();
     }
 
     void set_gl_vec3(glm::fvec3 values, const GLchar *name) const {
 
-        this->use_program();
+        use_program();
         glUniform3fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(values));
-        Shader::set_to_null();
-    }
-
-    void set_gl_vec2(glm::fvec2 values, const GLchar *name) const {
-
-        this->use_program();
-        glUniform2fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(values));
         Shader::set_to_null();
     }
 
     void set_gl_float(GLfloat value, const GLchar *name) const {
 
-        this->use_program();
+        use_program();
         glUniform1f(glGetUniformLocation(m_id, name), value);
         Shader::set_to_null();
     }
 
     void set_gl_int(GLint value, const GLchar *name) const {
 
-        this->use_program();
+        use_program();
         glUniform1i(glGetUniformLocation(m_id, name), value);
         Shader::set_to_null();
     }

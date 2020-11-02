@@ -4,8 +4,7 @@
 class Model {
 private:
     Material* m_material;
-    Texture* m_diffuse_tex;
-    Texture* m_specular_tex;
+    Texture* m_texture;
     std::vector<Mesh*> m_meshes;
     glm::vec3 m_position;
 
@@ -16,12 +15,11 @@ private:
 
 public:
     // Constructor
-    Model(Material* material, Texture* diffuse_tex, Texture* specular_tex,
+    Model(Material* material, Texture* texture,
           const std::vector<Mesh*>& meshes, glm::vec3 position) {
 
         m_material = material;
-        m_diffuse_tex = diffuse_tex;
-        m_specular_tex = specular_tex;
+        m_texture = texture;
         m_position = position;
 
         for (auto* i : meshes) {
@@ -52,17 +50,16 @@ public:
     }
 
     void render_model(Shader* shader) {
-        update_model_uniforms();
+        //update_model_uniforms();
         m_material->send_to_shader(*shader);
         shader->use_program();
 
         // Activate texture
-        m_diffuse_tex->bind_texture(GL_TEXTURE_2D, 0);
-        m_specular_tex->bind_texture(GL_TEXTURE_2D, 1);
+        m_texture->bind_texture(GL_TEXTURE_2D, 0);
 
         // Draw
         for (auto& i : m_meshes) {
-            i->render(shader);
+            i->render_mesh(shader);
         }
     }
 };
