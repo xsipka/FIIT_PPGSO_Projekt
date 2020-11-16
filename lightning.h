@@ -21,6 +21,14 @@ public:
         m_position = position;
     }
 
+    void set_color(glm::vec3 color) {
+        m_color = color;
+    }
+
+    void set_intensity(float intensity) {
+        m_intensity = intensity;
+    }
+
     // Sends point light values to shader
     void send_to_shader(Shader &program) {
         program.set_gl_vec3(m_position, "light.position");

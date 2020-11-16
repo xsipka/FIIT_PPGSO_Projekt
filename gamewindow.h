@@ -28,8 +28,8 @@ private:
     // Vector containing all light sources
     std::vector<Lightning*> m_lights;
 
-    // Vector containing all models
-    std::vector<Model*> m_models;
+    Club* m_club_scene{};
+    bool m_club_existence;
 
     // Delta time & mouse input
     float m_delta_time;
@@ -43,7 +43,6 @@ private:
     double m_mouse_x_offset;
     double m_mouse_y_offset;
     Camera m_camera;
-
 
     // Creates window
     void window_init(const char *title) {
@@ -120,44 +119,12 @@ private:
         m_shader = new Shader("vertex.glsl", "fragment.glsl");
     }
 
-    // Split into to functions with parameters
-    void models_init() {
-
-        // Create textures
-        auto *texture_01 = new Texture(R"(images\floor_01.png)", GL_TEXTURE_2D);
-        auto *texture_02 = new Texture(R"(images\ceiling_01.jpg)", GL_TEXTURE_2D);
-
-        // Create material
-        auto *material = new Material(glm::vec3(1.25f), glm::vec3(0.5f), glm::vec3(0.5f), 0);
-
-        // Create meshes
-        std::vector<Mesh*> m_meshes;
-        m_meshes.push_back(new Mesh (Ground().get_vertices(),  Ground().get_vertices_num(),
-                                     Ground().get_indices(), Ground().get_indices_num()));
-        m_meshes[0]->scale_mesh(glm::vec3(10.f));
-
-        std::vector<Mesh*> wall_mesh;
-        wall_mesh.push_back(new Mesh (Walls().get_vertices(),  Walls().get_vertices_num(),
-                                     Walls().get_indices(), Walls().get_indices_num()));
-        wall_mesh[0]->scale_mesh(glm::vec3(10.f));
-
-        /*std::vector<Vertex> temp;
-        temp = load_obj_file("obj_files/kock.obj");
-        m_meshes.push_back(new Mesh (temp.data(), temp.size(), nullptr, 0));*/
-
-        // Walls
-        //m_models.push_back(new Model(material, diffuse_tex, m_meshes, glm::vec3(0.f, 0.f, 0.f)));
-
-        // Floor & ceiling
-        m_models.push_back(new Model(material, texture_01, m_meshes, glm::vec3(0.f, -0.75f, 0.f)));
-        m_models.push_back(new Model(material, texture_02, m_meshes, glm::vec3(0.f, 2.25f, 0.f)));
-        m_models.push_back(new Model(material, texture_02, wall_mesh, glm::vec3(0.f, 0.f, 0.f)));
-    }
-
     void uniforms_init() {
         m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
         m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
-        m_lights[0]->send_to_shader(*m_shader);
+        for (auto& i : m_lights) {
+            i->send_to_shader(*m_shader);
+        }
     }
 
     // Update functions
@@ -171,7 +138,11 @@ private:
         m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
         m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
         m_shader->set_gl_vec3(m_camera.get_position(), "camera_pos");
-        m_lights[0]->send_to_shader(*m_shader);
+
+        for (auto& i : m_lights) {
+            i->send_to_shader(*m_shader);
+        }
+        //m_lights[0]->send_to_shader(*m_shader);
     }
 
     void update_delta_time() {
@@ -194,10 +165,6 @@ private:
         m_mouse_y_offset = m_mouse_y_last - m_mouse_y;
         m_mouse_x_last = m_mouse_x;
         m_mouse_y_last = m_mouse_y;
-
-        if (glfwGetKey(m_window, GLFW_KEY_Q) == GLFW_PRESS) {
-            m_lights[0]->set_position(m_camera.get_position());
-        }
     }
 
 
@@ -236,9 +203,11 @@ public:
 
         matrix_init();
         shader_init();
-        models_init();
         lights_init();
         uniforms_init();
+
+        m_club_scene = new Club();
+        m_club_existence = true;
     }
 
     // Destructor
@@ -259,8 +228,10 @@ public:
 
         glfwPollEvents();
 
-        move_player();
-        exit_window();
+        Player::player_interaction(m_window, &m_camera, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
+        if (m_club_existence) {
+            m_club_existence = Player::delete_club_scene(m_window, *m_club_scene);
+        }
 
         /*for (auto& i : m_models) {
             i->rotate_model(glm::vec3(0, 0.1, 0));
@@ -276,9 +247,8 @@ public:
         // Updates uniforms
         uniforms_update();
 
-        // Render models
-        for (auto& i : m_models) {
-            i->render_model(m_shader);
+        if (m_club_existence) {
+            m_club_scene->render(m_shader);
         }
 
         // End draw
@@ -288,47 +258,5 @@ public:
         glBindVertexArray(0);
         Texture::unbind_texture(GL_TEXTURE_2D);
         glUseProgram(0);
-    }
-
-    // Closes window after pressing esc
-    void exit_window() {
-        if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(m_window, GLFW_TRUE);
-        }
-    }
-
-    // Moves the camera
-    void move_player() {
-        // Move forward
-        if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS) {
-            if (!collision_detection('F')) {
-                m_camera.update_user_input(m_delta_time, 'F', m_mouse_x_offset, m_mouse_y_offset);
-            }
-        }
-        // Move backward
-        if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS) {
-            if (!collision_detection('B')) {
-                m_camera.update_user_input(m_delta_time, 'B', m_mouse_x_offset, m_mouse_y_offset);
-            }
-        }
-        // Move left
-        if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS) {
-            if (!collision_detection('L')) {
-                m_camera.update_user_input(m_delta_time, 'L', m_mouse_x_offset, m_mouse_y_offset);
-            }
-        }
-        // Move right
-        if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS) {
-            if (!collision_detection('R')) {
-                m_camera.update_user_input(m_delta_time, 'R', m_mouse_x_offset, m_mouse_y_offset);
-            }
-        }
-    }
-
-    // Checks Player - walls collisions
-    bool collision_detection(char direction) {
-
-        std::cout << " Camera: x: " << m_camera.get_position().x << ", z: " << m_camera.get_position().z << "\n";
-        return false;
     }
 };

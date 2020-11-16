@@ -26,7 +26,7 @@ uniform vec3 camera_pos;
 
 void main() {
 
-    // Diffuse light                 to                    from
+    // Diffuse light                 to              from
     vec3 diffuse_vec = normalize(light.position - vs_position);
     float diffuse = clamp(dot(diffuse_vec, normalize(vs_normal)), 0, 1);
     vec3 diffuse_final =  material.diffuse * diffuse;

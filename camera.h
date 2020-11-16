@@ -35,7 +35,6 @@ private:
         m_up = glm::normalize(glm::cross(m_right, m_front));
     }
 
-
     bool camera_constraint(float& delta_time, char direction) {
 
         glm::vec3 shift(0.f);
@@ -156,5 +155,4 @@ public:
         update_mouse_input(delta_time, mouse_x_offset, mouse_y_offset);
         update_key_input(delta_time, direction);
     }
-
 };

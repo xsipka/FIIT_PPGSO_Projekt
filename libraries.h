@@ -18,6 +18,9 @@
 #include "model.h"
 #include "loader.h"
 #include "lightning.h"
+#include "club.h"
+#include "player.h"
+
 
 // Used for loading textures
 // Source: https://github.com/nothings/stb/blob/master/stb_image.h

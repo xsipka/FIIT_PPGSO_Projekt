@@ -59,17 +59,18 @@ public:
 
         unsigned vertices_num = sizeof(vertices) / sizeof(Vertex);
         GLuint indices[] = {
-                        0, 1, 2,
-                        0, 2, 3,
-
-                        7, 6, 1,
-                        7, 1, 0,
-
-                        4, 5, 6,
-                        4, 6, 7,
-
-                        3, 2, 5,
-                        3, 5, 4
+                0, 1, 2,
+                0, 2, 3,
+                7, 6, 1,
+                7, 1, 0,
+                4, 5, 6,
+                4, 6, 7,
+                3, 2, 5,
+                3, 5, 4,
+                1, 2, 6,
+                6, 5, 2,
+                0, 3, 7,
+                3, 7, 4
                 };
 
         unsigned indices_num = sizeof(indices) / sizeof(GLuint);

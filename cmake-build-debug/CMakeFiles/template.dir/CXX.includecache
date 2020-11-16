@@ -938,6 +938,8 @@ string
 vector
 -
 
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/club.h
+
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/gamewindow.h
 libraries.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/libraries.h
@@ -979,6 +981,10 @@ loader.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/loader.h
 lightning.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/lightning.h
+club.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/club.h
+player.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/player.h
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/lightning.h
 
@@ -1045,6 +1051,8 @@ vector
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/model.h
 vector
 -
+
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/player.h
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/primitives.h
 GL/glew.h
