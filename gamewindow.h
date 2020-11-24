@@ -25,9 +25,6 @@ private:
     // Shader
     Shader* m_shader{};
 
-    // Vector containing all light sources
-    std::vector<Lightning*> m_lights;
-
     Club* m_club_scene{};
     bool m_club_existence;
 
@@ -111,10 +108,6 @@ private:
                 m_near_plane, m_far_plane);
     }
 
-    void lights_init() {
-        m_lights.push_back(new Lightning(glm::vec3 (0.f, 1.f, 0.f), glm::vec3 (0.8f, 0.f, 0.8f), 10.f));
-    }
-
     void shader_init() {
         m_shader = new Shader("vertex.glsl", "fragment.glsl");
     }
@@ -122,9 +115,6 @@ private:
     void uniforms_init() {
         m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
         m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
-        for (auto& i : m_lights) {
-            i->send_to_shader(*m_shader);
-        }
     }
 
     // Update functions
@@ -138,11 +128,6 @@ private:
         m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
         m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
         m_shader->set_gl_vec3(m_camera.get_position(), "camera_pos");
-
-        for (auto& i : m_lights) {
-            i->send_to_shader(*m_shader);
-        }
-        //m_lights[0]->send_to_shader(*m_shader);
     }
 
     void update_delta_time() {
@@ -203,7 +188,6 @@ public:
 
         matrix_init();
         shader_init();
-        lights_init();
         uniforms_init();
 
         m_club_scene = new Club();

@@ -149,6 +149,7 @@ public:
             default:
                 break;
         }
+        std::cout << "X: " << m_position.x << "\t Z: " << m_position.z << "\n";
     }
 
     void update_user_input(float &delta_time, char direction, double &mouse_x_offset, double &mouse_y_offset) {
