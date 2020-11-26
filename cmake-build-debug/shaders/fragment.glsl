@@ -14,7 +14,7 @@ struct Light {
 };
 
 // number of lights
-const int LIGHTS_NUM = 3;
+const int LIGHTS_NUM = 5;
 
 in vec3 vs_position;
 in vec3 vs_color;
@@ -30,7 +30,7 @@ uniform vec3 camera_pos;
 // used for calculating attenuation
 const float CONST = 1.5f;
 const float LINEAR = 0.045f;
-const float QUAD = 0.15f;   // increase for darkness
+const float QUAD = 0.25f;   // increase for darkness
 
 
 // calculates ambient light
@@ -42,7 +42,7 @@ vec3 get_ambient(Material material) {
 vec3 get_diffuse(Material material, vec3 vs_position, vec3 vs_normal, Light light) {
 
     vec3 light_dir = normalize(light.position - vs_position);
-    float diffuse = clamp(dot(light_dir, normalize(vs_normal)), 0, 1);
+    float diffuse = clamp(dot(light_dir, normalize(vs_normal)), 1.f, 0.5f);
     vec3 diffuse_final =  material.diffuse * diffuse;
 
     return diffuse_final;
@@ -94,7 +94,7 @@ void main() {
         vec3 diffuse_final = get_diffuse(material, vs_position, vs_normal, lights[i]);
         vec3 specular_final = get_specular(material, vs_position, vs_normal, lights[i], camera_pos);
 
-        // Attenuation
+        // Applying attenuation
         float attenuation = get_attenuation(lights[i], vs_position);
 
         // Mixing it all and creating point lights

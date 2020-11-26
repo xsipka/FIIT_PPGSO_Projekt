@@ -41,6 +41,25 @@ public:
     }
 
 
+    static void club_interaction(GLFWwindow *window, Club& club_scene) {
+
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            club_scene.drop_confetti();
+        }
+        if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS) {
+            club_scene.change_light_color('0');
+        }
+        if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS) {
+            club_scene.change_light_color('1');
+        }
+        if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS) {
+            club_scene.change_light_color('2');
+        }
+        if (glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS) {
+            club_scene.change_light_color('3');
+        }
+    }
+
     static bool delete_club_scene(GLFWwindow *window, Club& club_scene) {
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {

@@ -8,11 +8,6 @@ private:
     std::vector<Mesh*> m_meshes;
     glm::vec3 m_position;
 
-
-    void update_model_uniforms() {
-
-    }
-
 public:
     // Constructor
     Model(Material* material, Texture* texture,
@@ -33,6 +28,10 @@ public:
 
     // Destructor
     ~Model() {
+
+        delete m_texture;
+        delete m_material;
+
         for (auto*& i : m_meshes) {
             delete i;
         }
@@ -45,12 +44,30 @@ public:
         }
     }
 
+    void move_model(glm::vec3 shift) {
+        for (auto& i : m_meshes) {
+            i->move_mesh(shift);
+        }
+    }
+
+    void set_position(glm::vec3 position) {
+        for (auto& i : m_meshes) {
+            i->set_position(position);
+        }
+    }
+
+    void scale_model(glm::vec3 scale) {
+        for (auto& i : m_meshes) {
+            i->set_scale(scale);
+        }
+    }
+
     glm::vec3 get_position() {
         return m_position;
     }
 
     void render_model(Shader* shader) {
-        //update_model_uniforms();
+
         m_material->send_to_shader(*shader);
         shader->use_program();
 

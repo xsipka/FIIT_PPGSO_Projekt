@@ -16,7 +16,7 @@ private:
     glm::vec3 m_front;
     glm::vec3 m_right;
     glm::vec3 m_up;
-    glm::vec3 m_up_view;
+    glm::vec3 m_world_up;
 
     GLfloat m_pitch{};
     GLfloat m_yaw{};
@@ -31,7 +31,7 @@ private:
         m_front.z = sin(glm::radians(m_yaw) * cos(glm::radians(m_pitch)));
 
         m_front = glm::normalize(m_front);
-        m_right = glm::normalize(glm::cross(m_front, m_up_view));
+        m_right = glm::normalize(glm::cross(m_front, m_world_up));
         m_up = glm::normalize(glm::cross(m_right, m_front));
     }
 
@@ -67,7 +67,7 @@ private:
 
 public:
     // Constructor
-    Camera(glm::vec3 position, glm::vec3 up_view) {
+    Camera(glm::vec3 position, glm::vec3 world_up) {
 
         // Camera settings
         m_movement_speed = 5.f;
@@ -75,9 +75,9 @@ public:
 
         m_view_matrix = glm::mat4(1.f);
         m_position = position;
-        m_up_view = up_view;
+        m_world_up = world_up;
 
-        m_up = up_view;
+        m_up = world_up;
         m_right = glm::vec3(0.f);
 
         m_pitch = 0.f;
@@ -149,7 +149,7 @@ public:
             default:
                 break;
         }
-        std::cout << "X: " << m_position.x << "\t Z: " << m_position.z << "\n";
+        //std::cout << "X: " << m_position.x << "\t Z: " << m_position.z << "\n";
     }
 
     void update_user_input(float &delta_time, char direction, double &mouse_x_offset, double &mouse_y_offset) {

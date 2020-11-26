@@ -7,8 +7,6 @@ private:
     GLFWwindow* m_window{};
     const int WINDOW_WIDTH;
     const int WINDOW_HEIGHT;
-    int m_framebuffer_width{};
-    int m_framebuffer_height{};
 
     // View matrix
     glm::vec3 m_world_up;
@@ -43,8 +41,10 @@ private:
 
     // Creates window
     void window_init(const char *title) {
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        int m_framebuffer_width = 0;
+        int m_framebuffer_height = 0;
         this->m_window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, title, nullptr, nullptr);
 
         if (!m_window) {
@@ -83,10 +83,6 @@ private:
     void options_init() {
 
         glEnable(GL_DEPTH_TEST);
-
-        //glEnable(GL_CULL_FACE);
-        //glCullFace(GL_BACK);
-        //glFrontFace(GL_CCW);
 
         // Blending of colors
         glEnable(GL_BLEND);
@@ -155,11 +151,8 @@ private:
 
 public:
     // Constructor
-    GameWindow(const int width, const int height, const char *title, int &framebuffer_width, int &framebuffer_height, Camera camera)
+    GameWindow(const int width, const int height, const char *title, Camera camera)
             : WINDOW_WIDTH(width), WINDOW_HEIGHT(height), m_camera(camera) {
-
-        m_framebuffer_width = framebuffer_width;
-        m_framebuffer_height = framebuffer_height;
 
         GameWindow::glfw_init();
         window_init(title);
@@ -214,12 +207,10 @@ public:
 
         Player::player_interaction(m_window, &m_camera, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
         if (m_club_existence) {
+            m_club_scene->update(m_shader);
+            Player::club_interaction(m_window, *m_club_scene);
             m_club_existence = Player::delete_club_scene(m_window, *m_club_scene);
         }
-
-        /*for (auto& i : m_models) {
-            i->rotate_model(glm::vec3(0, 0.1, 0));
-        }*/
     }
 
     // Main render function
@@ -232,7 +223,7 @@ public:
         uniforms_update();
 
         if (m_club_existence) {
-            m_club_scene->render(m_shader);
+            m_club_scene->render(m_shader, m_delta_time);
         }
 
         // End draw

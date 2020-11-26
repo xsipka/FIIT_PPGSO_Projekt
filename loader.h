@@ -11,7 +11,7 @@
 #include <ppgso/ppgso.h>
 
 
-
+// My simple .obj loader
 static std::vector<Vertex> load_obj_file(const char* file_name) {
 
     std::vector<glm::fvec3> vertices_position;
@@ -59,18 +59,25 @@ static std::vector<Vertex> load_obj_file(const char* file_name) {
             int counter = 0;
 
             while (ss_line >> temp_int) {
-                // Loading data
-                if (counter == 0) {
+                if (!vertices_normal.empty()) {
+                    // Loading data
+                    if (counter == 0) {
+                        indices_position.push_back(temp_int);
+                    } else if (counter == 1) {
+                        indices_texcoord.push_back(temp_int);
+                    } else if (counter == 2) {
+                        indices_normal.push_back(temp_int);
+                    }
+                }
+                if (vertices_normal.empty()) {
+                    // Loading data
                     indices_position.push_back(temp_int);
                 }
-                else if (counter == 1) {
-                    indices_texcoord.push_back(temp_int);
-                }
-                else if (counter == 2) {
-                    indices_normal.push_back(temp_int);
-                }
-
                 // Checks for delimiters between values
+                if (ss_line.peek() == '/') {
+                    ++counter;
+                    ss_line.ignore(1, '/');
+                }
                 if (ss_line.peek() == '/') {
                     ++counter;
                     ss_line.ignore(1, '/');
@@ -90,8 +97,12 @@ static std::vector<Vertex> load_obj_file(const char* file_name) {
 
     for (size_t i = 0; i < vertices.size(); i++) {
         vertices[i].position = vertices_position[indices_position[i] - 1];
-        vertices[i].texture_coord = vertices_texcoord[indices_texcoord[i] - 1];
-        vertices[i].normal = vertices_normal[indices_normal[i] - 1];
+        if (!vertices_texcoord.empty()) {
+            vertices[i].texture_coord = vertices_texcoord[indices_texcoord[i] - 1];
+        }
+        if (!vertices_normal.empty()) {
+            vertices[i].normal = vertices_normal[indices_normal[i] - 1];
+        }
         vertices[i].color = glm::vec3(1.f, 1.f, 1.f);
     }
     std::cout << "File loaded successfully :)\n";

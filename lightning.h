@@ -18,34 +18,19 @@ public:
     // Destructor
     ~Lightning() = default;
 
-    // Getters and setters
-    void set_position(glm::vec3 position) {
-        m_position = position;
-    }
+    // Getters, setters & modifiers
+    void set_position(glm::vec3 position) { m_position = position; }
+    void set_color(glm::vec3 color) { m_color = color; }
+    void set_intensity(float intensity) { m_intensity = intensity; }
 
-    void set_color(glm::vec3 color) {
-        m_color = color;
-    }
+    void move_light(glm::vec3 position) { m_position += position; }
+    void adjust_color(glm::vec3 color) { m_color += color; }
 
-    void set_intensity(float intensity) {
-        m_intensity = intensity;
-    }
+    glm::vec3 get_color() const { return m_color; }
+    glm::vec3 get_position() const { return m_position; }
 
-    glm::vec3 get_color() const {
-        return m_color;
-    }
-
-    glm::vec3 get_position() const {
-        return m_position;
-    }
-
-    float get_intensity() const {
-        return m_intensity;
-    }
-
-    int get_id() const {
-        return m_id;
-    }
+    float get_intensity() const { return m_intensity; }
+    int get_id() const { return m_id; }
 
     // Sends point light values to shader
     void send_to_shader(Shader &program, const int id) {

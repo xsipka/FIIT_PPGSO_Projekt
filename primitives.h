@@ -9,17 +9,17 @@
 #include <vector>
 
 
-class Primitive {
+class Shapes {
 private:
     std::vector<Vertex> m_vertices;
     std::vector<GLuint> m_indices;
 
 public:
     // Constructor
-    Primitive() = default;
+    Shapes() = default;
 
     // Destructor
-    virtual ~Primitive() = default;
+    virtual ~Shapes() = default;
 
     // Loads vertex data and indices into vectors
     void load_vertices(Vertex *vertices, unsigned vertices_num, GLuint *indices, unsigned indices_num) {
@@ -41,10 +41,10 @@ public:
     unsigned get_indices_num() { return m_indices.size(); }
 };
 
-// Class used for creating quad
-class Walls : public Primitive {
+
+class Cube : public Shapes {
 public:
-    Walls() : Primitive() {
+    Cube() : Shapes() {
 
         Vertex vertices[] = {
             { glm::vec3(-0.5f, 0.5f, 0.5f),	glm::vec3(1.f, 0.f, 0.f),	glm::vec2(0.f, 1.f),		glm::vec3(0.f, 0.f, 1.f), },
@@ -79,9 +79,9 @@ public:
     }
 };
 
-class Ground : public Primitive {
+class Square : public Shapes {
 public:
-    Ground() : Primitive() {
+    Square() : Shapes() {
 
         Vertex vertices[] = {
                 { glm::vec3(-0.5f, 0.f, 0.5f), glm::vec3(1.f, 0.f, 0.f), glm::vec2(0.f, 1.f), glm::vec3(0.f, 0.f, 1.f), },
