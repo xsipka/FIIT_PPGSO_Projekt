@@ -117,10 +117,6 @@ private:
     void uniforms_update() {
 
         m_view_matrix = m_camera.get_view_matrix();
-        /*m_projection_matrix = glm::perspective(
-                glm::radians(m_fov),
-                static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT),
-                m_near_plane, m_far_plane);*/
         m_shader->set_gl_mat4(m_projection_matrix, "projection_matrix", GL_FALSE);
         m_shader->set_gl_mat4(m_view_matrix, "view_matrix", GL_FALSE);
         m_shader->set_gl_vec3(m_camera.get_position(), "camera_pos");
@@ -165,7 +161,7 @@ public:
 
         m_fov = 90.f;
         m_near_plane = 0.1f;
-        m_far_plane = 1000.f;
+        m_far_plane = 100.f;
 
         m_delta_time = 0;
         m_curr_time = 0;
@@ -201,11 +197,15 @@ public:
 
         update_delta_time();
         update_mouse_position();
-        m_camera.update_user_input(m_delta_time, -1, m_mouse_x_offset, m_mouse_y_offset);
+
+        if (m_camera.get_cam_mode() == INTERACTIVE) {
+            m_camera.update_user_input(m_delta_time, -1, m_mouse_x_offset, m_mouse_y_offset);
+        }
 
         glfwPollEvents();
 
         Player::player_interaction(m_window, &m_camera, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
+
         if (m_club_existence) {
             m_club_scene->update(m_shader);
             Player::club_interaction(m_window, *m_club_scene);

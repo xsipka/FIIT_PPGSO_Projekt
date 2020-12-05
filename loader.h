@@ -105,6 +105,6 @@ static std::vector<Vertex> load_obj_file(const char* file_name) {
         }
         vertices[i].color = glm::vec3(1.f, 1.f, 1.f);
     }
-    std::cout << "File loaded successfully :)\n";
+    //std::cout << "File loaded successfully :)\n";
     return vertices;
 }

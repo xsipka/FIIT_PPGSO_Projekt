@@ -14,9 +14,8 @@ int main() {
     const int WINDOW_WIDTH = 1440;
     const int WINDOW_HEIGHT = 900;
 
-    Camera cam(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
-    GameWindow window(WINDOW_WIDTH, WINDOW_HEIGHT, "Gej klub :)", cam);
-
+    Camera cam(glm::vec3(0.f, 0.35f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+    GameWindow window(WINDOW_WIDTH, WINDOW_HEIGHT, "a", cam);
 
     // Loops until window gets closed
     while (!glfwWindowShouldClose(window.get_window())) {

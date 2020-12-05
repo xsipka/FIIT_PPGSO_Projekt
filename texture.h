@@ -44,11 +44,11 @@ public:
             stbi_image_free(image);
             exit(1);
         }
-
         glActiveTexture(0);
         glBindTexture(GL_TEXTURE_2D, 0);
         stbi_image_free(image);
     }
+
 
     Texture(std::vector<std::string> files, GLenum texture_type) {
 

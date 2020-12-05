@@ -947,6 +947,10 @@ GLFW/glfw3.h
 -
 glm/glm.hpp
 -
+cstdlib
+-
+ctime
+-
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/gamewindow.h
 libraries.h

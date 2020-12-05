@@ -33,6 +33,19 @@ public:
     }
 
 
+    static void change_camera(GLFWwindow *window, Camera *camera) {
+
+        if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS) {
+            camera->set_cam_mode(INTERACTIVE);
+        }
+        if (glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS) {
+            camera->set_cam_mode(ANIMATED_01);
+        }
+        if (glfwGetKey(window, GLFW_KEY_KP_6) == GLFW_PRESS) {
+            camera->set_cam_mode(ANIMATED_02);
+        }
+    }
+
     static void exit_window(GLFWwindow *window) {
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -73,8 +86,12 @@ public:
     static void player_interaction(GLFWwindow *window, Camera *camera, float delta_time,
                             double mouse_x_offset, double mouse_y_offset) {
 
-        move_player(window, camera, delta_time, mouse_x_offset, mouse_y_offset);
+        change_camera(window, camera);
         exit_window(window);
+
+        if (camera->get_cam_mode() == INTERACTIVE) {
+            move_player(window, camera, delta_time, mouse_x_offset, mouse_y_offset);
+        }
     }
 
 };
