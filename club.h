@@ -177,9 +177,20 @@ private:
         static std::random_device rd;
         static std::mt19937 e2(rd());
         std::uniform_real_distribution<> dis(min, max);
+        //std::cout << dis(e2) << "\n";
         return dis(e2);
         /*auto num = min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max - min)));
         return num;*/
+    }
+
+    static glm::vec3 randomize_position() {
+
+        auto position = glm::vec3();
+        position.x = get_random(-1.5, 1.75);
+        position.y = -0.75f;
+        position.z = get_random(3.9, 4.3);
+
+        return position;
     }
 
     // Load textures
@@ -298,7 +309,7 @@ private:
         m_models.push_back(new Model(m_materials[0], m_textures[4], m_bar[3], glm::vec3(1.75f, -0.75f, 4.25f)));
 
         // wine bottle      // X: ( -1.5, 1.75)  Z: ( 3.9, 4.3)
-        m_bottle.push_back(new Model(m_materials[5], m_textures[7], m_bottle_mesh, glm::vec3(1.5f, -0.75f, 4.3f)));
+        //m_bottle.push_back(new Model(m_materials[5], m_textures[7], m_bottle_mesh, glm::vec3(1.5f, -0.75f, 4.3f)));
         //std::cout << get_random(-1.5, 1.75);
 
         // speakers & DJ setup
@@ -401,6 +412,11 @@ public:
     // Drops confetti
     void drop_confetti() {
         m_confetti.push_back(new Confetti());
+    }
+
+    // Spawns a bottle
+    void order_bottle() {
+        m_bottle.push_back(new Model(m_materials[5], m_textures[7], m_bottle_mesh, randomize_position()));
     }
 
     // Update club interior

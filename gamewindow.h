@@ -204,13 +204,13 @@ public:
 
         glfwPollEvents();
 
-        Player::player_interaction(m_window, &m_camera, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
+        Player::player_interaction(m_window, &m_camera, *m_club_scene, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
 
-        if (m_club_existence) {
-            m_club_scene->update(m_shader);
-            Player::club_interaction(m_window, *m_club_scene);
-            m_club_existence = Player::delete_club_scene(m_window, *m_club_scene);
-        }
+        //if (m_club_existence) {
+        m_club_scene->update(m_shader);
+        //Player::club_interaction(m_window, *m_club_scene);
+        //m_club_existence = Player::delete_club_scene(m_window, *m_club_scene);
+        //}
     }
 
     // Main render function

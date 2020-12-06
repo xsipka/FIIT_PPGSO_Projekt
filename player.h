@@ -1,4 +1,6 @@
 
+bool spawn_bottle = true;
+
 class Player {
 private:
 
@@ -32,6 +34,16 @@ public:
         }
     }
 
+    static bool check_if_near_bar(Camera *camera) {
+
+        auto player_position = camera->get_position();
+
+        if ((player_position.x > 1.75f && player_position.x < 5.3) &&
+            (player_position.z > 3.39f && player_position.z < 3.6)) {
+        return true;
+        }
+        return false;
+    }
 
     static void change_camera(GLFWwindow *window, Camera *camera) {
 
@@ -54,11 +66,27 @@ public:
     }
 
 
-    static void club_interaction(GLFWwindow *window, Club& club_scene) {
+    static void club_interaction(GLFWwindow *window, Club& club_scene, Camera *camera) {
 
+        // Spawn a bottle
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+            if (spawn_bottle) {
+                spawn_bottle = false;
+                if (camera->get_cam_mode() == INTERACTIVE && check_if_near_bar(camera)) {
+                    club_scene.order_bottle();
+                }
+            }
+        }
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) {
+            spawn_bottle = true;
+        }
+
+        // Drop confetti
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
             club_scene.drop_confetti();
         }
+
+        // Change color of light
         if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS) {
             club_scene.change_light_color('0');
         }
@@ -75,18 +103,19 @@ public:
 
     static bool delete_club_scene(GLFWwindow *window, Club& club_scene) {
 
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+        /*if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
             club_scene.~Club();
             return false;
-        }
+        }*/
         return true;
     }
 
 
-    static void player_interaction(GLFWwindow *window, Camera *camera, float delta_time,
-                            double mouse_x_offset, double mouse_y_offset) {
+    static void player_interaction(GLFWwindow *window, Camera *camera, Club& club_scene,
+                                   float delta_time, double mouse_x_offset, double mouse_y_offset) {
 
         change_camera(window, camera);
+        club_interaction(window, club_scene, camera);
         exit_window(window);
 
         if (camera->get_cam_mode() == INTERACTIVE) {
