@@ -111,8 +111,9 @@ CMakeFiles/template.dir/main.cpp.obj
  ../ppgso/ppgso.h
  ../ppgso/window.h
  ../stb_image/stb_image.h
+ D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/bottle.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/camera.h
- D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/club.h
+ D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/confetti.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/gamewindow.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/libraries.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/lightning.h
@@ -122,7 +123,9 @@ CMakeFiles/template.dir/main.cpp.obj
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/mesh.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/model.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/player.h
- D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/primitives.h
+ D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/scene_1.h
+ D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/scene_2.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/shader.h
+ D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/shapes.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/texture.h
  D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/vertex.h

@@ -25,6 +25,7 @@ private:
 
     Club* m_club_scene{};
     bool m_club_existence;
+    Scene2* m_scene_2{};
 
     // Delta time & mouse input
     float m_delta_time;
@@ -37,7 +38,9 @@ private:
     double m_mouse_y_last;
     double m_mouse_x_offset;
     double m_mouse_y_offset;
+
     Camera m_camera;
+    Player m_player;
 
     // Creates window
     void window_init(const char *title) {
@@ -204,13 +207,21 @@ public:
 
         glfwPollEvents();
 
-        Player::player_interaction(m_window, &m_camera, *m_club_scene, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
+        Player::exit_window(m_window);
+        Player::update_movement(m_window, &m_camera, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
 
-        //if (m_club_existence) {
-        m_club_scene->update(m_shader);
-        //Player::club_interaction(m_window, *m_club_scene);
-        //m_club_existence = Player::delete_club_scene(m_window, *m_club_scene);
-        //}
+
+        if (m_club_existence) {
+            m_club_scene->update(m_shader);
+            m_player.player_interaction(m_window, &m_camera, *m_club_scene, m_delta_time);
+            m_club_existence = m_player.switch_scenes(*m_club_scene);
+            if (!m_club_existence) {
+                m_scene_2 = new Scene2();
+            }
+        }
+        if (!m_club_existence) {
+            m_scene_2->update(m_shader);
+        }
     }
 
     // Main render function
@@ -224,6 +235,9 @@ public:
 
         if (m_club_existence) {
             m_club_scene->render(m_shader, m_delta_time);
+        }
+        if (!m_club_existence) {
+            m_scene_2->render(m_shader);
         }
 
         // End draw

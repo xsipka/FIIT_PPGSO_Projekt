@@ -27,15 +27,7 @@ public:
     }
 
     // Destructor
-    ~Model() {
-
-        delete m_texture;
-        delete m_material;
-
-        for (auto*& i : m_meshes) {
-            delete i;
-        }
-    }
+    ~Model() = default;
 
 
     void rotate_model(glm::vec3 rotation) {
@@ -51,8 +43,15 @@ public:
     }
 
     void set_position(glm::vec3 position) {
+        //m_position = position;
         for (auto& i : m_meshes) {
             i->set_position(position);
+        }
+    }
+
+    void set_rotation(glm::vec3 rotation) {
+        for (auto& i : m_meshes) {
+            i->set_rotation(rotation);
         }
     }
 
@@ -63,7 +62,11 @@ public:
     }
 
     glm::vec3 get_position() {
-        return m_position;
+        return m_meshes[0]->get_position();
+    }
+
+    glm::vec3 get_rotation() {
+        return m_meshes[0]->get_rotation();
     }
 
     void render_model(Shader* shader) {

@@ -1,20 +1,15 @@
 
-bool spawn_bottle = true;
-
 class Player {
 private:
-
-
-public:
-    // Constructor
-    Player() = default;
-
-    // Destructor
-    ~Player() = default;
-
+    glm::vec3 position;
+    bool spawn_bottle = true;
+    bool bottle_grabbed = true;
+    bool bottle_dropped = false;
+    bool animation_status = false;
+    int counter = 0;
 
     static void move_player(GLFWwindow *window, Camera *camera, float delta_time,
-                     double mouse_x_offset, double mouse_y_offset) {
+                            double mouse_x_offset, double mouse_y_offset) {
 
         // Move forward
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -40,7 +35,7 @@ public:
 
         if ((player_position.x > 1.75f && player_position.x < 5.3) &&
             (player_position.z > 3.39f && player_position.z < 3.6)) {
-        return true;
+            return true;
         }
         return false;
     }
@@ -58,33 +53,7 @@ public:
         }
     }
 
-    static void exit_window(GLFWwindow *window) {
-
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
-    }
-
-
-    static void club_interaction(GLFWwindow *window, Club& club_scene, Camera *camera) {
-
-        // Spawn a bottle
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            if (spawn_bottle) {
-                spawn_bottle = false;
-                if (camera->get_cam_mode() == INTERACTIVE && check_if_near_bar(camera)) {
-                    club_scene.order_bottle();
-                }
-            }
-        }
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) {
-            spawn_bottle = true;
-        }
-
-        // Drop confetti
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            club_scene.drop_confetti();
-        }
+    static void change_light_color(GLFWwindow *window, Club& club_scene) {
 
         // Change color of light
         if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS) {
@@ -101,26 +70,103 @@ public:
         }
     }
 
-    static bool delete_club_scene(GLFWwindow *window, Club& club_scene) {
+    void club_interaction(GLFWwindow *window, Club& club_scene, Camera *camera, float delta_time) {
 
-        /*if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            club_scene.~Club();
-            return false;
-        }*/
-        return true;
+        // Spawn a bottle
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+            if (spawn_bottle) {
+                spawn_bottle = false;
+                if (camera->get_cam_mode() == INTERACTIVE && check_if_near_bar(camera)) {
+                    club_scene.order_bottle();
+                }
+            }
+        }
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) {
+            spawn_bottle = true;
+        }
+
+        // Setup drinking animation
+        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+            if (bottle_grabbed && !animation_status && club_scene.check_bottles() && check_if_near_bar(camera)) {
+                bottle_grabbed = false;
+                animation_status = true;
+                if (camera->get_cam_mode() == INTERACTIVE) {
+                    club_scene.setup_drink_animation();
+                }
+            }
+        }
+        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE) {
+            bottle_grabbed = true;
+        }
+
+        // Sends cam position to function, run animation until false
+        if (animation_status && camera->get_cam_mode() == INTERACTIVE) {
+            if (!bottle_dropped) {
+                club_scene.grab_bottle(camera->get_center());
+            }
+            if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS || bottle_dropped) {
+                if (!bottle_dropped) {
+                    position = camera->get_position();
+                    animation_status = club_scene.drop_bottle(delta_time, position);
+                }
+                else {
+                    animation_status = club_scene.drop_bottle(delta_time, position);
+                }
+                bottle_dropped = true;
+                if (!animation_status) {
+                    ++counter;
+                    bottle_dropped = false;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE) {
+                bottle_grabbed = true;
+            }
+        }
+
+        // Drop confetti
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            club_scene.drop_confetti();
+        }
     }
 
 
-    static void player_interaction(GLFWwindow *window, Camera *camera, Club& club_scene,
-                                   float delta_time, double mouse_x_offset, double mouse_y_offset) {
+public:
+    // Constructor
+    Player() = default;
+
+    // Destructor
+    ~Player() = default;
+
+    void player_interaction(GLFWwindow *window, Camera *camera, Club& club_scene, float delta_time) {
 
         change_camera(window, camera);
-        club_interaction(window, club_scene, camera);
-        exit_window(window);
+        change_light_color(window, club_scene);
+
+        club_interaction(window, club_scene, camera, delta_time);
+    }
+
+    static void update_movement(GLFWwindow *window, Camera *camera, float delta_time,
+                                   double mouse_x_offset, double mouse_y_offset) {
 
         if (camera->get_cam_mode() == INTERACTIVE) {
             move_player(window, camera, delta_time, mouse_x_offset, mouse_y_offset);
         }
     }
 
+    // Switch to new scene after breaking 3 bottles
+    bool switch_scenes(Club& club_scene) const {
+
+        if (counter == 3) {
+            club_scene.~Club();
+            return false;
+        }
+        return true;
+    }
+
+    static void exit_window(GLFWwindow *window) {
+
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+    }
 };

@@ -12,6 +12,7 @@
 const char INTERACTIVE = '0';
 const char ANIMATED_01 = '1';
 const char ANIMATED_02 = '2';
+const char STATIC_CAM  = '3';
 
 
 class Camera {
@@ -68,6 +69,15 @@ private:
             // DJ setup & speakers collision
             if ((shift.x <= 2.35 && shift.x >= -2.2) &&
                 (shift.z <= -3.5 && shift.z >= -4.8)) {
+                return false;
+            }
+            // sitting area collisions
+            if ((shift.x <= -3.6 && shift.x >= -4.6) &&
+                (shift.z <= 2.45 && shift.z >= 0.65)) {
+                return false;
+            }
+            if ((shift.x <= -2.9 && shift.x >= -4.2) &&
+                (shift.z <= 5.15 && shift.z >= 2.4)) {
                 return false;
             }
             return true;
@@ -208,6 +218,16 @@ public:
         }
     }
 
+    glm::vec3 get_center() {
+
+        float radius = 0.5f;
+        auto bottle_pos = glm::vec3();
+        bottle_pos.x = std::cos(glm::radians(m_yaw)) * radius;
+        bottle_pos.z = std::sin(glm::radians(m_yaw)) * radius;
+
+        return m_position + bottle_pos;
+    }
+
     glm::mat4 get_view_matrix() {
 
         if (m_cam_mode == INTERACTIVE) {
@@ -231,6 +251,10 @@ public:
 
     void set_cam_mode(char cam_mode) {
         m_cam_mode = cam_mode;
+    }
+
+    void set_position(glm::vec3 position) {
+        m_position = position;
     }
 
     // Update function

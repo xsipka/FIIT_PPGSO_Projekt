@@ -49,34 +49,6 @@ public:
         stbi_image_free(image);
     }
 
-
-    Texture(std::vector<std::string> files, GLenum texture_type) {
-
-        glGenTextures(1, &m_id);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
-
-        for (unsigned int i = 0; i < files.size(); i++) {
-            unsigned char *image = stbi_load(files[i].c_str(), &m_image_width, &m_image_height, &m_comp, 0);
-            if (image) {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                             0, GL_RGB, m_image_width, m_image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
-                );
-                stbi_image_free(image);
-            }
-            else
-            {
-                std::cout << "Error in texture.h, Texture() constructor: " << files[i] << " couldn't be opened ...\n";
-                stbi_image_free(image);
-                exit(1);
-            }
-        }
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    }
-
     // Destructor
     ~Texture() {
         glDeleteTextures(1, &m_id);

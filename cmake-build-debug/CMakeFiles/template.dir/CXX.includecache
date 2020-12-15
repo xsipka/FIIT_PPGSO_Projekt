@@ -920,6 +920,8 @@ intrin.h
 arm_neon.h
 -
 
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/bottle.h
+
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/camera.h
 GL/glew.h
 -
@@ -938,19 +940,7 @@ string
 vector
 -
 
-D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/club.h
-random
--
-GL/glew.h
--
-GLFW/glfw3.h
--
-glm/glm.hpp
--
-cstdlib
--
-ctime
--
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/confetti.h
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/gamewindow.h
 libraries.h
@@ -983,8 +973,8 @@ mesh.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/mesh.h
 material.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/material.h
-primitives.h
-D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/primitives.h
+shapes.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/shapes.h
 camera.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/camera.h
 model.h
@@ -993,8 +983,12 @@ loader.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/loader.h
 lightning.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/lightning.h
-club.h
-D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/club.h
+bottle.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/bottle.h
+scene_1.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/scene_1.h
+scene_2.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/scene_2.h
 player.h
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/player.h
 
@@ -1066,23 +1060,23 @@ vector
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/player.h
 
-D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/primitives.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/scene_1.h
+random
+-
 GL/glew.h
 -
 GLFW/glfw3.h
 -
 glm/glm.hpp
 -
-ppgso/ppgso.h
+cstdlib
 -
-iostream
+ctime
 -
-fstream
--
-string
--
-vector
--
+confetti.h
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/confetti.h
+
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/scene_2.h
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/shader.h
 GL/glew.h
@@ -1098,6 +1092,24 @@ iostream
 fstream
 -
 string
+-
+
+D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/shapes.h
+GL/glew.h
+-
+GLFW/glfw3.h
+-
+glm/glm.hpp
+-
+ppgso/ppgso.h
+-
+iostream
+-
+fstream
+-
+string
+-
+vector
 -
 
 D:/Dokumenty/STU - FIIT/5. sem/PPGSO/template/texture.h

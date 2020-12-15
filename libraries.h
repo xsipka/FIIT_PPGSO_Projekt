@@ -13,12 +13,14 @@
 #include "texture.h"
 #include "mesh.h"
 #include "material.h"
-#include "primitives.h"
+#include "shapes.h"
 #include "camera.h"
 #include "model.h"
 #include "loader.h"
 #include "lightning.h"
-#include "club.h"
+#include "bottle.h"
+#include "scene_1.h"
+#include "scene_2.h"
 #include "player.h"
 
 

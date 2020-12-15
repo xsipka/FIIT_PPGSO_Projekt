@@ -110,8 +110,9 @@ CMakeFiles/template.dir/main.cpp.obj: ../ppgso/image_raw.h
 CMakeFiles/template.dir/main.cpp.obj: ../ppgso/ppgso.h
 CMakeFiles/template.dir/main.cpp.obj: ../ppgso/window.h
 CMakeFiles/template.dir/main.cpp.obj: ../stb_image/stb_image.h
+CMakeFiles/template.dir/main.cpp.obj: ../bottle.h
 CMakeFiles/template.dir/main.cpp.obj: ../camera.h
-CMakeFiles/template.dir/main.cpp.obj: ../club.h
+CMakeFiles/template.dir/main.cpp.obj: ../confetti.h
 CMakeFiles/template.dir/main.cpp.obj: ../gamewindow.h
 CMakeFiles/template.dir/main.cpp.obj: ../libraries.h
 CMakeFiles/template.dir/main.cpp.obj: ../lightning.h
@@ -121,8 +122,10 @@ CMakeFiles/template.dir/main.cpp.obj: ../material.h
 CMakeFiles/template.dir/main.cpp.obj: ../mesh.h
 CMakeFiles/template.dir/main.cpp.obj: ../model.h
 CMakeFiles/template.dir/main.cpp.obj: ../player.h
-CMakeFiles/template.dir/main.cpp.obj: ../primitives.h
+CMakeFiles/template.dir/main.cpp.obj: ../scene_1.h
+CMakeFiles/template.dir/main.cpp.obj: ../scene_2.h
 CMakeFiles/template.dir/main.cpp.obj: ../shader.h
+CMakeFiles/template.dir/main.cpp.obj: ../shapes.h
 CMakeFiles/template.dir/main.cpp.obj: ../texture.h
 CMakeFiles/template.dir/main.cpp.obj: ../vertex.h
 

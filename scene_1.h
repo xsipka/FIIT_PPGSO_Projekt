@@ -5,152 +5,19 @@
 #include <cstdlib>
 #include <ctime>
 
-
-class Confetti {
-private:
-    std::vector<Texture*> m_texture{};
-    std::vector<Mesh*> m_shape;
-    Material* m_material{};
-    Model* m_model{};
-
-    glm::vec3 m_speed;
-    glm::vec3 m_position;
-    float m_time_to_live{};
-
-    const float CONF_WIDTH = 0.001;
-    const float CONF_LENGTH = 0.05;
-    const float GRAVITY = 9.81f;
-    const float FLOOR = -0.745f;
-    const float BAR = 0.275f;
-
-
-    static float get_random(float min, float max) {
-
-        auto num = min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max - min)));
-        return num;
-    }
-
-    static glm::vec3 randomize_position() {
-
-        auto position = glm::vec3(0.f);
-        position.x = get_random(-5.f, 5.f);
-        position.y = 3.75f;
-        position.z = get_random(-5.f, 5.f);
-
-        return position;
-    }
-
-    glm::vec3 randomize_speed() const {
-
-        auto speed = glm::vec3(0.f);
-        speed.x = get_random(-20, 20);
-        speed.y = -GRAVITY;
-        speed.z = get_random(-20, 20);
-
-        auto chance = get_random(0, 100);
-        if (chance < 50) {
-            speed.x *= -1;
-            speed.z *= -1;
-        }
-        return speed;
-    }
-
-    void confetti_init() {
-
-        m_position = randomize_position();
-        m_speed = glm::vec3(0.f);
-        m_time_to_live = 15.f;
-
-        m_texture.push_back(new Texture(R"(images\confetti_01.png)", GL_TEXTURE_2D));
-        m_texture.push_back(new Texture(R"(images\confetti_02.png)", GL_TEXTURE_2D));
-        m_shape.push_back(new Mesh(Cube().get_vertices(),  Cube().get_vertices_num(),
-                                   Cube().get_indices(), Cube().get_indices_num()));
-
-        m_material = new Material(glm::vec3(0.5f), glm::vec3(1.f), glm::vec3(10.f), 0);
-        int rand_tex = rand() % (1 - 0 + 1) + 0;
-        m_model = new Model(m_material, m_texture[rand_tex], m_shape, m_position);
-        m_model->scale_model(glm::vec3(CONF_LENGTH, CONF_WIDTH, CONF_LENGTH));
-    }
-
-    void wall_collisions(float delta_time) {
-
-        auto shift = m_speed * delta_time * 0.25f;
-        m_position.y += shift.y;
-
-        if ((m_position.x + shift.x < 5.4f) && (m_position.x + shift.x > -5.4)) {
-            m_position.x += shift.x;
-        }
-        if ((m_position.z + shift.z < 5.4f) && (m_position.z + shift.z > -5.4)) {
-            m_position.z += shift.z;
-        }
-    }
-
-    bool bar_collision() const {
-
-        if ((m_position.x <= 5.5 && m_position.x >= 1.5) &&
-            (m_position.z <= 4.2 && m_position.z >= 3.7)) {
-            return true;
-        }
-        return false;
-    }
-
-public:
-    // Constructor
-    Confetti() {
-        confetti_init();
-    }
-
-    // Destructor
-    ~Confetti() {
-
-        for (auto& i : m_texture) {
-            delete i;
-        }
-
-        delete m_material;
-
-        for (auto& i : m_shape) {
-            delete i;
-        }
-
-        delete m_model;
-    }
-
-    bool update(float delta_time) {
-
-        m_time_to_live -= delta_time;
-        if (m_time_to_live < 0) {
-            return false;
-        }
-
-        // Confetti staying on the bar
-        if (m_position.y <= BAR && bar_collision()) {
-            //m_position.y = BAR;
-            return true;
-        }
-
-        wall_collisions(delta_time);
-
-        // Confetti staying on the ground
-        if (m_position.y <= FLOOR) { return true; }
-
-        m_model->move_model(m_speed * delta_time * 0.25f);
-        m_speed += randomize_speed() * delta_time;
-
-        return true;
-    }
-
-    void render(Shader* shader) {
-        m_model->render_model(shader);
-    }
-};
-
+#include "confetti.h"
 
 
 class Club {
 private:
+    // Vector of models containing all of the static parts of the interior
     std::vector<Model*> m_models;
-    std::vector<Model*> m_bottle;
+
+    // Vector containing all bottles spawned on bar
+    std::vector<Bottle*> m_bottles;
+    Bottle* m_bottle{};
+
+    bool m_bottle_existence = false;
 
     std::vector<Texture*> m_textures;
     std::vector<Material*> m_materials;
@@ -166,7 +33,7 @@ private:
 
     // Other meshes
     std::vector<Mesh*> m_wall_art;
-    std::vector<Mesh*> m_bottle_mesh;
+
     std::vector<Confetti*> m_confetti;
 
     std::vector<Lightning*> m_lights;
@@ -186,9 +53,9 @@ private:
     static glm::vec3 randomize_position() {
 
         auto position = glm::vec3();
-        position.x = get_random(-1.5, 1.75);
+        position.x = get_random(5.4, 1.7);
         position.y = -0.75f;
-        position.z = get_random(3.9, 4.3);
+        position.z = get_random(3.8, 4.3);
 
         return position;
     }
@@ -287,10 +154,6 @@ private:
         m_sitting[1].push_back(new Mesh(temp.data(), temp.size(), nullptr, 0));
         temp = load_obj_file("obj_files/sitting_03.obj");
         m_sitting[2].push_back(new Mesh(temp.data(), temp.size(), nullptr, 0));
-
-        // Wine bottle
-        temp = load_obj_file("obj_files/wine_01.obj");
-        m_bottle_mesh.push_back(new Mesh(temp.data(), temp.size(), nullptr, 0));
     }
 
     // Put everything together and create whole club
@@ -307,10 +170,6 @@ private:
         m_models.push_back(new Model(m_materials[0], m_textures[4], m_bar[1], glm::vec3(1.75f, -0.75f, 4.25f)));
         m_models.push_back(new Model(m_materials[2], m_textures[5], m_bar[2], glm::vec3(1.75f, -0.75f, 4.25f)));
         m_models.push_back(new Model(m_materials[0], m_textures[4], m_bar[3], glm::vec3(1.75f, -0.75f, 4.25f)));
-
-        // wine bottle      // X: ( -1.5, 1.75)  Z: ( 3.9, 4.3)
-        //m_bottle.push_back(new Model(m_materials[5], m_textures[7], m_bottle_mesh, glm::vec3(1.5f, -0.75f, 4.3f)));
-        //std::cout << get_random(-1.5, 1.75);
 
         // speakers & DJ setup
         m_models.push_back(new Model(m_materials[7], m_textures[2], m_speakers[0], glm::vec3(-2.f, -0.75f, -3.75f)));
@@ -336,6 +195,36 @@ private:
         m_lights.push_back(new Lightning(glm::vec3 (-4.5f, 3.f, -3.5f), glm::vec3 (0.6f, 0.f, 0.2f), 10.f, 4));
     }
 
+    // Return false if in area
+    static bool wall_collisions(glm::vec3 position) {
+
+        if ((position.x < 5.4f) && (position.x > -5.4) && (position.z < 5.4f) && (position.z > -5.4)) {
+            return false;
+        }
+        return true;
+    }
+
+    static bool speakers_collisions(glm::vec3 position) {
+
+        if ((position.x <= 2.1 && position.x >= 1.33) &&
+            (position.z <= -3.7 && position.z >= -4.66)) {
+            return true;
+        }
+        if ((position.x <= -1.2 && position.x >= -2.01) &&
+            (position.z <= -3.7 && position.z >= -4.66)) {
+            return true;
+        }
+        return false;
+    }
+
+    static bool table_collision(glm::vec3 position) {
+
+        if ((position.x <= -1.8 && position.x >= -3.1) &&
+            (position.z <= 4.05 && position.z >= 1.55)) {
+            return true;
+        }
+        return false;
+    }
 
 public:
     // Constructor
@@ -366,13 +255,22 @@ public:
         for (auto& model : m_models) {
             delete model;
         }
-        for (auto& bottle : m_bottle) {
+        for (auto& bottle : m_bottles) {
             delete bottle;
         }
         for (auto light : m_lights) {
             delete light;
         }
     };
+
+    // Returns true if some bottles exist
+    bool check_bottles() {
+        if (m_bottles.empty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     // Changes light color
     void change_light_color(char type) {
@@ -416,7 +314,60 @@ public:
 
     // Spawns a bottle
     void order_bottle() {
-        m_bottle.push_back(new Model(m_materials[5], m_textures[7], m_bottle_mesh, randomize_position()));
+        if (m_bottles.empty()) {
+            m_bottles.push_back(new Bottle(randomize_position()));
+        }
+        else {
+            // add some check
+            m_bottles.push_back(new Bottle(randomize_position()));
+        }
+    }
+
+    // Setup drinking animation
+    void setup_drink_animation() {
+
+        if (m_bottles.empty()) { return; }
+
+        m_bottle_existence = true;
+        m_bottle = m_bottles.front();
+        m_bottles.erase(m_bottles.begin());
+    }
+
+    // Drink a bottle
+    void grab_bottle(glm::vec3 bottle_position) const {
+
+        bottle_position.y = -0.75f;
+
+        if (!wall_collisions(bottle_position) && !speakers_collisions(bottle_position)) {
+            m_bottle->set_position(bottle_position);
+        }
+    }
+
+    bool drop_bottle(float delta_time, glm::vec3 player_position) {
+
+        //m_bottle.time_to_live -= delta_time;
+        m_bottle->decrease_time_to_live(delta_time);
+
+        if (m_bottle->get_time_to_live() < 0) {
+            m_bottle_existence = false;
+            return false;
+        }
+        auto position = m_bottle->get_position();
+        auto speed = m_bottle->get_speed();
+
+        // Drop bottle on the table
+        if (table_collision(player_position) && position.y < -1.255f) {
+            return true;
+        }
+
+        // Drop bottle on the ground
+        if (position.y < -1.7f) { return true; }
+
+        auto shift = speed * delta_time * 0.75f;
+        position += shift;
+        m_bottle->move_bottle(speed * delta_time * 0.75f);
+        m_bottle->increase_speed(glm::vec3(0.f, -9.81f, 0.f) * delta_time);
+        return true;
     }
 
     // Update club interior
@@ -434,8 +385,8 @@ public:
             i->render_model(shader);
         }
 
-        for (auto& i : m_bottle) {
-            i->render_model(shader);
+        for (auto& i : m_bottles) {
+            i->render_bottle(shader);
         }
 
         for (auto& i : m_confetti) {
@@ -443,8 +394,9 @@ public:
                 i->render(shader);
             }
         }
+        if (m_bottle_existence) {
+            m_bottle->render_bottle(shader);
+        }
 
     }
 };
-
-
