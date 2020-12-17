@@ -9,6 +9,7 @@ add_executable(template main.cpp)
 # CONFIGURATION
 #
 
+
 # Basic CMake settings
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/_install)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
@@ -43,12 +44,15 @@ target_compile_definitions(template PUBLIC -DGLM_FORCE_RADIANS -DGLEW_STATIC)
 # Path to WinMM.Lib
 # link_directories(C:\\Program Files \(x86\)\\Windows Kits\\10\\Lib\\10.0.18362.0\\um\\x64)
 
+# some gay fix lol
+set(CMAKE_EXE_LINKER_FLAGS "-static")
+
 # Link to GLFW, GLEW and OpenGL
 target_link_libraries(template PUBLIC
         ${GLFW_LIBRARIES}
         ${GLEW_LIBRARIES}
         ${OPENGL_LIBRARIES}
-        winMM.Lib)
+        winMM.Lib -static-libgcc -static-libstdc++)
 
 # Pass on include directories
 target_include_directories(template PUBLIC

@@ -49,12 +49,6 @@ public:
         }
     }
 
-    void set_rotation(glm::vec3 rotation) {
-        for (auto& i : m_meshes) {
-            i->set_rotation(rotation);
-        }
-    }
-
     void scale_model(glm::vec3 scale) {
         for (auto& i : m_meshes) {
             i->set_scale(scale);
@@ -67,7 +61,6 @@ public:
         }
     }
 
-
     glm::vec3 get_position() {
         return m_meshes[0]->get_position();
     }
@@ -76,7 +69,11 @@ public:
         return m_meshes[0]->get_rotation();
     }
 
-    void render_model(Shader* shader) {
+    glm::vec3 get_scale() {
+        return m_meshes[0]->get_scale();
+    }
+
+    void render_model(Shader* shader, bool custom = false, glm::mat4 custom_matrix = glm::mat4(1.f)) {
 
         m_material->send_to_shader(*shader);
         shader->use_program();
@@ -86,7 +83,7 @@ public:
 
         // Draw
         for (auto& i : m_meshes) {
-            i->render_mesh(shader);
+            i->render_mesh(shader, custom, custom_matrix);
         }
     }
 };

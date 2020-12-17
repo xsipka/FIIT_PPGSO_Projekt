@@ -155,7 +155,7 @@ public:
     static void update_movement(GLFWwindow *window, Camera *camera, float delta_time,
                                    double mouse_x_offset, double mouse_y_offset) {
 
-        if (camera->get_cam_mode() == INTERACTIVE) {
+        if (camera->get_cam_mode() == INTERACTIVE || camera->get_cam_mode() == STATIC_CAM) {
             move_player(window, camera, delta_time, mouse_x_offset, mouse_y_offset);
         }
     }

@@ -50,9 +50,9 @@ public:
         lights_init();
         background_init();
 
-        m_bottle_1 = new Bottle(glm::vec3(0.f, -1.15f, 0.f), 1);
-        m_bottle_2 = new Bottle(glm::vec3(0.f, -0.65f, 0.f), 1);
-        m_bottle_3 = new Bottle(glm::vec3(0.f,  0.15f, 0.f), 1);
+        m_bottle_1 = new Bottle(glm::vec3(-0.5f, -1.15f, 0.f), 1);
+        m_bottle_2 = new Bottle(glm::vec3(-0.5f, -0.65f, 0.f), 1);
+        m_bottle_3 = new Bottle(glm::vec3(-0.5f,  0.15f, 0.f), 1);
     }
 
     // Destructor
@@ -66,7 +66,9 @@ public:
         }
         auto t = static_cast<float>(glfwGetTime());
 
-        m_bottle_2->rotate_bottle(glm::vec3(t * 0.01, 0, t * 0.01), m_bottle_1->get_position());
+        m_bottle_1->move_bottle(glm::vec3(std::sin(t) * 0.005, 0, std::cos(t) * 0.005));
+        m_bottle_2->rotate_bottle(glm::vec3(t * 0.01, 0, 0), m_bottle_1->get_position());
+        m_bottle_3->update_bottle(m_bottle_2);
     }
 
     void render(Shader* shader) {
@@ -74,6 +76,6 @@ public:
         m_background->render_model(shader);
         m_bottle_1->render_bottle(shader);
         m_bottle_2->render_bottle(shader);
-        m_bottle_3->render_bottle(shader);
+        m_bottle_3->render_bottle(shader, true, m_bottle_3->get_model_matrix());
     }
 };

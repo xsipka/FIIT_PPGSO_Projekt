@@ -201,7 +201,7 @@ public:
         update_delta_time();
         update_mouse_position();
 
-        if (m_camera.get_cam_mode() == INTERACTIVE) {
+        if (m_camera.get_cam_mode() == INTERACTIVE || m_camera.get_cam_mode() == STATIC_CAM) {
             m_camera.update_user_input(m_delta_time, -1, m_mouse_x_offset, m_mouse_y_offset);
         }
 
@@ -219,6 +219,8 @@ public:
             // Create new scene if club scene ended
             if (!m_club_existence) {
                 m_scene_2 = new Scene2();
+                m_camera.set_cam_mode(STATIC_CAM);
+                m_camera.set_position(glm::vec3(3.35, 0.35, 0.35));
             }
         }
         // Update of the second scene

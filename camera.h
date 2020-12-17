@@ -228,7 +228,7 @@ public:
 
     glm::mat4 get_view_matrix() {
 
-        if (m_cam_mode == INTERACTIVE) {
+        if (m_cam_mode == INTERACTIVE || m_cam_mode == STATIC_CAM) {
             update_cam_vectors();
             m_view_matrix = glm::lookAt(m_position, m_position + m_front, m_up);
         }
@@ -251,10 +251,16 @@ public:
         m_cam_mode = cam_mode;
     }
 
+    void set_position(glm::vec3 position) {
+        m_position = position;
+    }
+
     // Update function
     void update_user_input(float &delta_time, char direction, double &mouse_x_offset, double &mouse_y_offset) {
 
         update_mouse_input(delta_time, mouse_x_offset, mouse_y_offset);
-        update_key_input(delta_time, direction);
+        if (m_cam_mode == INTERACTIVE) {
+            update_key_input(delta_time, direction);
+        }
     }
 };

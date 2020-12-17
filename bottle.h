@@ -147,6 +147,10 @@ public:
         return m_model->get_rotation();
     }
 
+    glm::mat4 get_model_matrix() {
+        return m_model_matrix;
+    }
+
     bool get_broken_status() const {
         return m_broken;
     }
@@ -194,14 +198,21 @@ public:
 
     // Main update function
     void update_bottle(Bottle* bottle) {
-
+        /*m_model_matrix = glm::mat4(1.f);
+        m_model_matrix = translate(m_model_matrix, m_position);
+        m_model_matrix = rotate(m_model_matrix, glm::radians(bottle->m_model->get_rotation().x), glm::vec3(1, 0, 0));
+        m_model_matrix = translate(m_model_matrix, -m_position);*/
+        /*m_model_matrix = translate(m_model_matrix, -bottle->m_model->get_rotation());
+        m_model_matrix = rotate(m_model_matrix, glm::radians(0.5f), glm::vec3(0, 0, 1));
+        m_model_matrix = translate(m_model_matrix, bottle->m_model->get_rotation());
+        m_model_matrix = glm::scale(m_model_matrix, m_model->get_scale());*/
     }
 
     // Main render function
-    void render_bottle(Shader* shader) {
+    void render_bottle(Shader* shader, bool custom = false, glm::mat4 custom_matrix = glm::mat4(1.f)) {
 
         if (!m_broken) {
-            m_model->render_model(shader);
+            m_model->render_model(shader, custom, custom_matrix);
         }
         else {
             m_shard_1->render_model(shader);

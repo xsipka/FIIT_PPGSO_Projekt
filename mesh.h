@@ -106,29 +106,6 @@ public:
         model_matrix_update();
     }
 
-    // Constructor for objects
-    Mesh(Mesh& object) {
-        m_position = object.m_position;
-        m_rotation = object.m_rotation;
-        m_scale = object.m_scale;
-        m_rotate_pos = glm::vec3(0.f);
-
-        m_vertices_num = object.m_vertices_num;
-        m_indices_num = object.m_indices_num;
-
-        m_vertices = new Vertex[m_vertices_num];
-        for (size_t i = 0; i < m_vertices_num; i++) {
-            m_vertices[i] = object.m_vertices[i];
-        }
-        m_indices = new GLuint[m_indices_num];
-        for (size_t i = 0; i < m_indices_num; i++) {
-            m_indices[i] = object.m_indices[i];
-        }
-
-        vertex_init(m_vertices, m_vertices_num, m_indices, m_indices_num);
-        model_matrix_update();
-    }
-
 
     // Destructor
     ~Mesh() {
