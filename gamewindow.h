@@ -223,7 +223,7 @@ public:
         }
         // Update of the second scene
         if (!m_club_existence) {
-            m_scene_2->update(m_shader, m_delta_time);
+            m_scene_2->update(m_shader);
         }
     }
 

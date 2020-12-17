@@ -12,6 +12,9 @@ const float RESISTANCE = 0.05f;
 
 class Bottle {
 private:
+    // Custom model matrix
+    glm::mat4 m_model_matrix;
+
     Model* m_model;
     Texture* m_texture;
     Material* m_material;
@@ -187,6 +190,11 @@ public:
 
         // Slowly decrease speed of moving shards
         move_shards(m_speed * 0.01f * m_counter);
+    }
+
+    // Main update function
+    void update_bottle(Bottle* bottle) {
+
     }
 
     // Main render function

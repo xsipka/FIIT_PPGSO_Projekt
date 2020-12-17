@@ -52,22 +52,21 @@ public:
 
         m_bottle_1 = new Bottle(glm::vec3(0.f, -1.15f, 0.f), 1);
         m_bottle_2 = new Bottle(glm::vec3(0.f, -0.65f, 0.f), 1);
-        m_bottle_3 = new Bottle(glm::vec3(0.f, -0.15f, 0.f), 1);
+        m_bottle_3 = new Bottle(glm::vec3(0.f,  0.15f, 0.f), 1);
     }
 
     // Destructor
     ~Scene2() = default;
 
 
-    void update(Shader* shader, float delta_time) {
+    void update(Shader* shader) {
 
         for (auto& i : m_lights) {
             i->send_to_shader(*shader, i->get_id());
         }
-        //auto t = static_cast<float>(glfwGetTime());
+        auto t = static_cast<float>(glfwGetTime());
 
-        //m_bottle_1->rotate_bottle(glm::vec3(1, 0, 0), m_bottle_1->get_position());
-        m_bottle_2->rotate_bottle(glm::vec3(0.5, 0, 0), m_bottle_1->get_position());
+        m_bottle_2->rotate_bottle(glm::vec3(t * 0.01, 0, t * 0.01), m_bottle_1->get_position());
     }
 
     void render(Shader* shader) {

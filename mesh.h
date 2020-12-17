@@ -69,8 +69,14 @@ private:
         m_model_matrix = glm::scale(m_model_matrix, m_scale);
     }
 
+    // Sends model matrix to the shader
     void send_to_shader(Shader *shader) {
         shader->set_gl_mat4(m_model_matrix, "model_matrix", GL_FALSE);
+    }
+
+    // Updates uniforms using custom model matrix
+    static void send_custom_matrix_to_shader(Shader *shader, glm::mat4 custom_model_matrix) {
+        shader->set_gl_mat4(custom_model_matrix, "model_matrix", GL_FALSE);
     }
 
 
@@ -148,10 +154,15 @@ public:
 
 
     // Updates uniforms, bind VAO and renders object
-    void render_mesh(Shader *shader) {
+    void render_mesh(Shader *shader, bool custom = false, glm::mat4 custom_matrix = glm::mat4(1.f)) {
 
-        model_matrix_update();
-        send_to_shader(shader);
+        if (custom) {
+            send_custom_matrix_to_shader(shader, custom_matrix);
+        }
+        else {
+            model_matrix_update();
+            send_to_shader(shader);
+        }
         shader->use_program();
 
         glBindVertexArray(m_vao);
