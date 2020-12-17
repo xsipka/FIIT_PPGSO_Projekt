@@ -162,7 +162,7 @@ public:
 
     // Switch to new scene after breaking 3 bottles
     bool switch_scenes(Club& club_scene) const {
-    
+
         if (counter == 3) {
             club_scene.~Club();
             return false;
