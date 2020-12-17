@@ -109,7 +109,6 @@ CMakeFiles/template.dir/main.cpp.obj: ../ppgso/image_bmp.h
 CMakeFiles/template.dir/main.cpp.obj: ../ppgso/image_raw.h
 CMakeFiles/template.dir/main.cpp.obj: ../ppgso/ppgso.h
 CMakeFiles/template.dir/main.cpp.obj: ../ppgso/window.h
-CMakeFiles/template.dir/main.cpp.obj: ../stb_image/stb_image.h
 CMakeFiles/template.dir/main.cpp.obj: ../bottle.h
 CMakeFiles/template.dir/main.cpp.obj: ../camera.h
 CMakeFiles/template.dir/main.cpp.obj: ../confetti.h
