@@ -61,6 +61,13 @@ public:
         }
     }
 
+    void rotate_around(glm::vec3 position) {
+        for (auto& i : m_meshes) {
+            i->rotate_around(position);
+        }
+    }
+
+
     glm::vec3 get_position() {
         return m_meshes[0]->get_position();
     }

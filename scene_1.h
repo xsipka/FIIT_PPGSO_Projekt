@@ -44,10 +44,7 @@ private:
         static std::random_device rd;
         static std::mt19937 e2(rd());
         std::uniform_real_distribution<> dis(min, max);
-        //std::cout << dis(e2) << "\n";
         return dis(e2);
-        /*auto num = min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max - min)));
-        return num;*/
     }
 
     static glm::vec3 randomize_position() {
@@ -163,6 +160,7 @@ private:
         m_models.push_back(new Model(m_materials[1], m_textures[1], m_floor_mesh, glm::vec3(0.f, 3.75f, 0.f)));
         m_models.push_back(new Model(m_materials[1], m_textures[1], m_wall_mesh, glm::vec3(0.f, 0.f, 0.f)));
 
+        // Wall art
         m_models.push_back(new Model(m_materials[1], m_textures[12], m_wall_art, glm::vec3(0.f, 0.f, 0.f)));
 
         // bar
@@ -323,7 +321,7 @@ public:
         }
     }
 
-    // Setup drinking animation
+    // Setup bottle animations
     void setup_drink_animation() {
 
         if (m_bottles.empty()) { return; }
@@ -333,7 +331,7 @@ public:
         m_bottles.erase(m_bottles.begin());
     }
 
-    // Drink a bottle
+    // Grab bottle and carry it around
     void grab_bottle(glm::vec3 bottle_position) const {
 
         bottle_position.y = -0.75f;
@@ -343,38 +341,47 @@ public:
         }
     }
 
-    bool drop_bottle(float delta_time, glm::vec3 player_position) {
+    // Drop bottle
+    std::pair<bool, bool> drop_bottle(float delta_time, glm::vec3 player_position) {
 
-        //m_bottle.time_to_live -= delta_time;
+        // Bottle will disappear after some time
         m_bottle->decrease_time_to_live(delta_time);
-
         if (m_bottle->get_time_to_live() < 0) {
             m_bottle_existence = false;
-            return false;
+            return std::make_pair(false, m_bottle->get_broken_status());
         }
+
         auto position = m_bottle->get_position();
         auto speed = m_bottle->get_speed();
 
         // Drop bottle on the table
         if (table_collision(player_position) && position.y < -1.255f) {
-            return true;
+            return std::make_pair(true, false);
         }
 
         // Drop bottle on the ground
-        if (position.y < -1.7f) { return true; }
+        if (position.y < -1.7f) {
+            m_bottle->set_broken_status(true);
+            return std::make_pair(true, true);
+        }
 
+        // Bottle falling
         auto shift = speed * delta_time * 0.75f;
         position += shift;
         m_bottle->move_bottle(speed * delta_time * 0.75f);
         m_bottle->increase_speed(glm::vec3(0.f, -9.81f, 0.f) * delta_time);
-        return true;
+        return std::make_pair(true, false);
     }
+
 
     // Update club interior
     void update(Shader* shader) {
 
         for (auto& i : m_lights) {
             i->send_to_shader(*shader, i->get_id());
+        }
+        if (m_bottle_existence && m_bottle->get_broken_status()) {
+            m_bottle->update_breaking_animation();
         }
     }
 

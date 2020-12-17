@@ -22,6 +22,7 @@ private:
     glm::vec3 m_position;
     glm::vec3 m_rotation;
     glm::vec3 m_scale;
+    glm::vec3 m_rotate_pos;
     glm::mat4 m_model_matrix;
 
 
@@ -60,7 +61,7 @@ private:
     void model_matrix_update() {
         m_model_matrix = glm::mat4(1.f);
 
-        m_model_matrix = glm::translate(m_model_matrix, glm::vec3(0.f));
+        m_model_matrix = glm::translate(m_model_matrix, m_rotate_pos);
         m_model_matrix = glm::rotate(m_model_matrix, glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f));
         m_model_matrix = glm::rotate(m_model_matrix, glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f));
         m_model_matrix = glm::rotate(m_model_matrix, glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f));
@@ -81,6 +82,7 @@ public:
         m_position = position;
         m_rotation = rotation;
         m_scale = scale;
+        m_rotate_pos = glm::vec3(0.f);
 
         m_vertices_num = vertices_num;
         m_indices_num = indices_num;
@@ -103,6 +105,7 @@ public:
         m_position = object.m_position;
         m_rotation = object.m_rotation;
         m_scale = object.m_scale;
+        m_rotate_pos = glm::vec3(0.f);
 
         m_vertices_num = object.m_vertices_num;
         m_indices_num = object.m_indices_num;
@@ -141,6 +144,7 @@ public:
     void move_mesh(glm::vec3 position) { m_position += position; }
     void rotate_mesh(glm::vec3 rotation) { m_rotation += rotation; }
     void scale_mesh(glm::vec3 scale) { m_scale += scale; }
+    void rotate_around(glm::vec3 position) { m_rotate_pos = position; }
 
 
     // Updates uniforms, bind VAO and renders object

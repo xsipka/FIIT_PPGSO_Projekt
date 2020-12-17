@@ -22,9 +22,11 @@ private:
 
 public:
     // Constructors
-    Texture(const char *file_name, GLenum texture_type) {
+    Texture(const char *file_name, GLenum texture_type, bool flip = false) {
 
-        //stbi_set_flip_vertically_on_load(true);
+        if (flip) {
+            stbi_set_flip_vertically_on_load(true);
+        }
         unsigned char *image = stbi_load(file_name, &m_image_width, &m_image_height, &m_comp, STBI_rgb_alpha);
 
         glGenTextures(1, &m_id);

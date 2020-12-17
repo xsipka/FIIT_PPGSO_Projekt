@@ -193,8 +193,6 @@ public:
         m_right = glm::vec3(0.f);
 
         m_position = position;
-        //m_animated_01_pos = glm::vec3(5.0f, 1.5f, 5.0f);
-        //m_animated_02_pos = glm::vec3(0.f);
 
         m_pitch = 0.f;
         m_yaw = -90.f;
@@ -253,12 +251,9 @@ public:
         m_cam_mode = cam_mode;
     }
 
-    void set_position(glm::vec3 position) {
-        m_position = position;
-    }
-
     // Update function
     void update_user_input(float &delta_time, char direction, double &mouse_x_offset, double &mouse_y_offset) {
+
         update_mouse_input(delta_time, mouse_x_offset, mouse_y_offset);
         update_key_input(delta_time, direction);
     }

@@ -210,17 +210,20 @@ public:
         Player::exit_window(m_window);
         Player::update_movement(m_window, &m_camera, m_delta_time, m_mouse_x_offset, m_mouse_y_offset);
 
-
+        // Update of club scene
         if (m_club_existence) {
             m_club_scene->update(m_shader);
             m_player.player_interaction(m_window, &m_camera, *m_club_scene, m_delta_time);
             m_club_existence = m_player.switch_scenes(*m_club_scene);
+
+            // Create new scene if club scene ended
             if (!m_club_existence) {
                 m_scene_2 = new Scene2();
             }
         }
+        // Update of the second scene
         if (!m_club_existence) {
-            m_scene_2->update(m_shader);
+            m_scene_2->update(m_shader, m_delta_time);
         }
     }
 

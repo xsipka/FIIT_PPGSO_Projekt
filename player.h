@@ -2,9 +2,12 @@
 class Player {
 private:
     glm::vec3 position;
+
     bool spawn_bottle = true;
     bool bottle_grabbed = true;
     bool bottle_dropped = false;
+    bool bottle_broken{};
+
     bool animation_status = false;
     int counter = 0;
 
@@ -107,14 +110,18 @@ private:
             if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS || bottle_dropped) {
                 if (!bottle_dropped) {
                     position = camera->get_position();
-                    animation_status = club_scene.drop_bottle(delta_time, position);
+                    auto pair = club_scene.drop_bottle(delta_time, position);
+                    animation_status = pair.first;
+                    bottle_broken = pair.second;
                 }
                 else {
-                    animation_status = club_scene.drop_bottle(delta_time, position);
+                    auto pair = club_scene.drop_bottle(delta_time, position);
+                    animation_status = pair.first;
+                    bottle_broken = pair.second;
                 }
                 bottle_dropped = true;
                 if (!animation_status) {
-                    ++counter;
+                    if (bottle_broken) { ++counter; }
                     bottle_dropped = false;
                 }
             }
